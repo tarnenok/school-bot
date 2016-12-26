@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using TelegramBot.WebApi.Models;
 
 namespace TelegramBot.WebApi.Extensions
 {

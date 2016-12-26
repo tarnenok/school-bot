@@ -11,9 +11,7 @@ namespace TelegramBot.WebApi.Extensions
     {
         public static void AddTelegramBot(this IServiceCollection services, IConfigurationRoot configuration)
         {
-            var settings = new AppSettings();
-            configuration.Bind(settings);
-            services.AddSingleton(settings);
+            var settings = configuration.GetAppSettings();
 
             var client = new TelegramBotClient(settings.BotToken);
             services.AddSingleton<ITelegramBotClient>(client);

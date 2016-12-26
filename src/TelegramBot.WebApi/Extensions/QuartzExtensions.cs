@@ -14,7 +14,7 @@ namespace TelegramBot.WebApi.Extensions
 {
     public static class QuartzExtensions
     {
-        public static void AddQuartz(this IServiceCollection services, IConfigurationRoot configuration)
+        public static void AddQuartz(this IServiceCollection services)
         {
             LogProvider.SetCurrentLogProvider(new ConsoleLogProvider());
             var factory = new StdSchedulerFactory(new NameValueCollection
