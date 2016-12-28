@@ -9,9 +9,9 @@ namespace TelegramBot.WebApi.Utils
         {
             return (level, func, exception, parameters) =>
             {
-                if (level >= LogLevel.Info && func != null)
+                if (level >= LogLevel.Info)
                 {
-                    Console.WriteLine("[" + DateTime.Now + "] [" + level + "] " + func(), parameters);
+                    Console.WriteLine($"[{DateTime.Now}] [{level}] {func?.Invoke()} {exception}", parameters);
                 }
                 return true;
             };

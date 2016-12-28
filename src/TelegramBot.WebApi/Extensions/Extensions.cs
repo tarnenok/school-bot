@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using RestSharp;
 using TelegramBot.WebApi.Models;
 
 namespace TelegramBot.WebApi.Extensions
@@ -14,6 +15,16 @@ namespace TelegramBot.WebApi.Extensions
         public static void Sync(this Task task)
         {
             task.GetAwaiter().GetResult();
+        }
+
+        public static Task<IRestResponse> ExecuteTaskAsync(this IRestClient client, IRestRequest request)
+        {
+            var source = new TaskCompletionSource<IRestResponse>();
+            client.ExecuteAsync(request, response =>
+            {
+                source.SetResult(response);
+            });
+            return source.Task;
         }
     }
 }

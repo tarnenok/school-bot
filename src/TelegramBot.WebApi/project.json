@@ -14,15 +14,18 @@
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
 
     "Telegram.Bot": "11.1.0-beta-1",
-    "Quartz": "3.0.0-alpha2"
+    "Quartz": "3.0.0-alpha2",
+    "RestSharp.NetCore": "105.2.3",
+    "AngleSharp":"0.9.9",
+    "StructureMap": "4.4.2"
   },
 
   "frameworks": {
-    "netcoreapp1.1": {
+    "netcoreapp1.0": {
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
-          "version": "1.1.0"
+          "version": "1.0.0"
         }
       },
       "imports": "dnxcore50"

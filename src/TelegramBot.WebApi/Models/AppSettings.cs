@@ -4,6 +4,5 @@
     {
         public string Domain { get; set; }
         public string BotToken { get; set; }
-        public string SchoolFeedDomain { get; set; }
     }
 }

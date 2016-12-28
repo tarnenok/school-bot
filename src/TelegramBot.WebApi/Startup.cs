@@ -36,6 +36,7 @@ namespace TelegramBot.WebApi
             services.AddMvc();
             services.AddTelegramBot(Configuration);
             services.AddQuartz();
+            services.AddAppDependencies();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

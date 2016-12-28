@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Logging;
+using Quartz.Spi;
 using TelegramBot.WebApi.Jobs;
 using TelegramBot.WebApi.Models;
 using TelegramBot.WebApi.Utils;
@@ -17,11 +18,10 @@ namespace TelegramBot.WebApi.Extensions
         public static void AddQuartz(this IServiceCollection services)
         {
             LogProvider.SetCurrentLogProvider(new ConsoleLogProvider());
-            var factory = new StdSchedulerFactory(new NameValueCollection
-            {
-                { "quartz.serializer.type", "binary" }
-            });
-            services.AddSingleton<StdSchedulerFactory>();
+
+            services.AddTransient<ISchedulerFactory, StdSchedulerFactory>();
+            services.AddTransient<IJobFactory, DIJobFactory>();
+            services.AddTransient<GetNewsJob>();
 
             var config = new QuartzConfig();
             var getNewsJob = JobBuilder.Create<GetNewsJob>()
@@ -34,14 +34,15 @@ namespace TelegramBot.WebApi.Extensions
                     .RepeatForever())
                 .Build();
             config.Jobs.Add(new Tuple<IJobDetail, ITrigger>(getNewsJob, getNewsTrigger));
-            services.AddSingleton<QuartzConfig>(config);
+            services.AddSingleton(config);
         }
 
         public static IApplicationBuilder UseQuartz(this IApplicationBuilder app)
         {
-            var schedulerFactory = app.ApplicationServices.GetService<StdSchedulerFactory>();
+            var schedulerFactory = app.ApplicationServices.GetService<ISchedulerFactory>();
             var config = app.ApplicationServices.GetService<QuartzConfig>();
             var scheduler = schedulerFactory.GetScheduler().Sync();
+            scheduler.JobFactory = app.ApplicationServices.GetService<IJobFactory>();
             config.Jobs.ForEach(x => scheduler.ScheduleJob(x.Item1, x.Item2).Sync());
             scheduler.Start().Sync();
             return app;
