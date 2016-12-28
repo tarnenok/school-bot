@@ -7,6 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using TelegramBot.WebApi.DB.Models;
 using TelegramBot.WebApi.DB.Services;
+using TelegramBot.WebApi.Extensions;
 using TelegramBot.WebApi.Services;
 
 namespace TelegramBot.WebApi.Jobs
@@ -46,11 +47,7 @@ namespace TelegramBot.WebApi.Jobs
             {
                 foreach (var chart in charts)
                 {
-                    await _botClient.SendPhotoAsync(
-                        chart.Id,
-                        new FileToSend(new Uri(schoolNews.ImageUrl)),
-                        $"{schoolNews.Title}\n{schoolNews.Url}"
-                    );
+                    await _botClient.SendNews(schoolNews, chart.Id);
                 }
             }
         }
