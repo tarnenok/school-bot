@@ -17,7 +17,6 @@
     "Quartz": "3.0.0-alpha2",
     "RestSharp.NetCore": "105.2.3",
     "AngleSharp":"0.9.9",
-    "StructureMap": "4.4.2"
   },
 
   "frameworks": {
