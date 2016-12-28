@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
-using Telegram.Bot.Types;
+using System.Linq;
+using LiteDB;
+using TelegramBot.WebApi.DB.Models;
 
 namespace TelegramBot.WebApi.DB.Services
 {
@@ -7,12 +9,18 @@ namespace TelegramBot.WebApi.DB.Services
     {
         public void Upsert(Chat chat)
         {
-            throw new System.NotImplementedException();
+            using (var db = new LiteDatabase(DBConfig.DataBasePath))
+            {
+                db.Chats().Upsert(chat);
+            }
         }
 
         public List<Chat> GetByFilter()
         {
-            throw new System.NotImplementedException();
+            using (var db = new LiteDatabase(DBConfig.DataBasePath))
+            {
+                return db.Chats().FindAll().ToList();
+            }
         }
     }
 }

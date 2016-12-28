@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Telegram.Bot.Types;
+using TelegramBot.WebApi.DB.Models;
 
 namespace TelegramBot.WebApi.DB.Services
 {

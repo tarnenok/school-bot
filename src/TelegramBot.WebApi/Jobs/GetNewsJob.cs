@@ -2,40 +2,47 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LiteDB;
 using Quartz;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using TelegramBot.WebApi.DB;
+using TelegramBot.WebApi.DB.Models;
+using TelegramBot.WebApi.DB.Services;
 using TelegramBot.WebApi.Services;
-using Chat = TelegramBot.WebApi.DB.Models.Chat;
 
 namespace TelegramBot.WebApi.Jobs
 {
     public class GetNewsJob : IJob
     {
-        private readonly SchoolNewService _schoolNewService;
+        private readonly SchoolNewService _schoolNewLoader;
         private readonly ITelegramBotClient _botClient;
+        private readonly IChartService _chartService;
+        private readonly ISchoolNewsService _schoolNewsService;
 
-        public GetNewsJob(SchoolNewService schoolNewService, ITelegramBotClient botClient)
+        public GetNewsJob(
+            SchoolNewService schoolNewLoader,
+            ITelegramBotClient botClient,
+            IChartService chartService,
+            ISchoolNewsService schoolNewsService)
         {
-            _schoolNewService = schoolNewService;
+            _schoolNewLoader = schoolNewLoader;
             _botClient = botClient;
+            _chartService = chartService;
+            _schoolNewsService = schoolNewsService;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var news = (await _schoolNewService.GetNewsAsync(DateTime.Now)).ToList();
+            var date = DateTime.Now;
+            var news = (await _schoolNewLoader.GetNewsAsync(date)).ToList();
 
             if(news.Count == 0) return;
 
-            var charts = new List<Chat>();
-            using (var db = new LiteDatabase(DBConfig.DataBasePath))
-            {
-                charts = db.Chats().FindAll().ToList();
-                db.SchollNews().Upsert(news);
-            }
-            foreach (var schoolNews in news)
+            var charts = _chartService.GetByFilter();
+
+            var newest = GetNewest(news, date).ToList();
+            _schoolNewsService.Upsert(newest);
+
+            foreach (var schoolNews in newest)
             {
                 foreach (var chart in charts)
                 {
@@ -44,6 +51,18 @@ namespace TelegramBot.WebApi.Jobs
                         new FileToSend(new Uri(schoolNews.ImageUrl)),
                         $"{schoolNews.Title}\n{schoolNews.Url}"
                     );
+                }
+            }
+        }
+
+        private IEnumerable<SchoolNews> GetNewest(IEnumerable<SchoolNews> news, DateTime date)
+        {
+            var existingNews = _schoolNewsService.GetByFilter(new SchoolNewsFilter {DateTime = date}).ToList();
+            foreach (var schoolNewse in news)
+            {
+                if (!existingNews.Any(x => x.Date.Year == date.Year && x.Date.Month == date.Month))
+                {
+                    yield return schoolNewse;
                 }
             }
         }

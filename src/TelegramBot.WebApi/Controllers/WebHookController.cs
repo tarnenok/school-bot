@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using LiteDB;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using TelegramBot.WebApi.DB;
+using TelegramBot.WebApi.DB.Services;
 using Chat = TelegramBot.WebApi.DB.Models.Chat;
 
 namespace TelegramBot.WebApi.Controllers
@@ -11,10 +10,12 @@ namespace TelegramBot.WebApi.Controllers
     public class WebHookController : Controller
     {
         private readonly ITelegramBotClient _botClient;
+        private readonly IChartService _chartService;
 
-        public WebHookController(ITelegramBotClient botClient)
+        public WebHookController(ITelegramBotClient botClient, IChartService chartService)
         {
             _botClient = botClient;
+            _chartService = chartService;
         }
 
         [HttpPost("")]
@@ -24,14 +25,10 @@ namespace TelegramBot.WebApi.Controllers
 
             if (message.Text.Contains("/start"))
             {
-                using (var db = new LiteDatabase(DBConfig.DataBasePath))
+                _chartService.Upsert(new Chat
                 {
-                    db.Chats()
-                        .Upsert(new Chat
-                        {
-                            Id = message.Chat.Id.ToString()
-                        });
-                }
+                    Id = message.Chat.Id.ToString()
+                });
             }
 
             return Ok();
