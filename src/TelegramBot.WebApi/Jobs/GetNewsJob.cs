@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using LiteDB;
 using Quartz;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 using TelegramBot.WebApi.DB;
-using TelegramBot.WebApi.DB.Models;
 using TelegramBot.WebApi.Services;
+using Chat = TelegramBot.WebApi.DB.Models.Chat;
 
 namespace TelegramBot.WebApi.Jobs
 {
@@ -38,7 +39,11 @@ namespace TelegramBot.WebApi.Jobs
             {
                 foreach (var chart in charts)
                 {
-                    await _botClient.SendTextMessageAsync(chart.Id, schoolNews.Title);
+                    await _botClient.SendPhotoAsync(
+                        chart.Id,
+                        new FileToSend(new Uri(schoolNews.ImageUrl)),
+                        $"{schoolNews.Title}\n{schoolNews.Url}"
+                    );
                 }
             }
         }
