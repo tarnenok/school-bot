@@ -17,6 +17,7 @@
     "Quartz": "3.0.0-alpha2",
     "RestSharp.NetCore": "105.2.3",
     "AngleSharp":"0.9.9",
+    "LiteDB": "3.0.0-beta3"
   },
 
   "frameworks": {

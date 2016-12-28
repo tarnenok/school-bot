@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using AngleSharp.Parser.Html;
 using RestSharp;
+using TelegramBot.WebApi.DB.Models;
 using TelegramBot.WebApi.Extensions;
 using TelegramBot.WebApi.Models;
 

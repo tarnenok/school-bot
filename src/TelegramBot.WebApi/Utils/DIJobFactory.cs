@@ -1,7 +1,6 @@
 ﻿using System;
 using Quartz;
 using Quartz.Spi;
-using StructureMap;
 
 namespace TelegramBot.WebApi.Utils
 {

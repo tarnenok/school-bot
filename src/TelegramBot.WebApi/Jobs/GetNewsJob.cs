@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LiteDB;
 using Quartz;
 using Telegram.Bot;
+using TelegramBot.WebApi.DB;
+using TelegramBot.WebApi.DB.Models;
 using TelegramBot.WebApi.Services;
 
 namespace TelegramBot.WebApi.Jobs
@@ -22,14 +25,20 @@ namespace TelegramBot.WebApi.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
             var news = (await _schoolNewService.GetNewsAsync(DateTime.Now)).ToList();
+
             if(news.Count == 0) return;
 
-            var chartIds = new List<string>();
+            var charts = new List<Chat>();
+            using (var db = new LiteDatabase(DBConfig.DataBasePath))
+            {
+                charts = db.Chats().FindAll().ToList();
+                db.SchollNews().Upsert(news);
+            }
             foreach (var schoolNews in news)
             {
-                foreach (var chartId in chartIds)
+                foreach (var chart in charts)
                 {
-                    await _botClient.SendTextMessageAsync(chartId, schoolNews.Title);
+                    await _botClient.SendTextMessageAsync(chart.Id, schoolNews.Title);
                 }
             }
         }

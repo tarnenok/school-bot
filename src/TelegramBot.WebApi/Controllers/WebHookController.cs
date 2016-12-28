@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using LiteDB;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
+using TelegramBot.WebApi.DB;
+using Chat = TelegramBot.WebApi.DB.Models.Chat;
 
 namespace TelegramBot.WebApi.Controllers
 {
@@ -19,13 +18,20 @@ namespace TelegramBot.WebApi.Controllers
         }
 
         [HttpPost("")]
-        public async Task<IActionResult> GetMessage([FromBody]Update update)
+        public IActionResult GetMessage([FromBody]Update update)
         {
             var message = update.Message;
 
-            if (message.Type == MessageType.TextMessage)
+            if (message.Text.Contains("/start"))
             {
-                await _botClient.SendTextMessageAsync(message.Chat.Id, message.Text);
+                using (var db = new LiteDatabase(DBConfig.DataBasePath))
+                {
+                    db.Chats()
+                        .Upsert(new Chat
+                        {
+                            Id = message.Chat.Id.ToString()
+                        });
+                }
             }
 
             return Ok();
