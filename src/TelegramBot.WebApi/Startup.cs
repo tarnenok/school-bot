@@ -16,7 +16,7 @@ namespace TelegramBot.WebApi
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsStaging())
             {
                 builder.AddUserSecrets();
                 builder.AddApplicationInsightsSettings(developerMode: true);
