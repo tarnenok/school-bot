@@ -33,12 +33,14 @@ namespace TelegramBot.WebApi.Services
             var document = parser.Parse(html);
             foreach (var element in document.QuerySelectorAll(SELECTOR))
             {
+                DateTime date;
+                DateTime.TryParse(element.ChildNodes[3].TextContent, out date);
                 yield return new SchoolNews
                 {
                     ImageUrl = domain + element.ChildNodes[0].TextContent,
                     Title = element.ChildNodes[1].TextContent,
                     Url = domain + element.ChildNodes[2].TextContent,
-                    Date = DateTime.Parse(element.ChildNodes[3].TextContent)
+                    Date = date
                 };
             }
         }
