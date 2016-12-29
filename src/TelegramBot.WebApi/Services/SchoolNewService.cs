@@ -39,7 +39,7 @@ namespace TelegramBot.WebApi.Services
                     ImageUrl = domain + element.ChildNodes[0].TextContent,
                     Title = element.ChildNodes[1].TextContent,
                     Url = domain + element.ChildNodes[2].TextContent,
-                    Date = DateTime.Parse(element.ChildNodes[3].TextContent, CultureInfo.InvariantCulture)
+                    Date = DateTime.ParseExact("dd.MM.yyyy", element.ChildNodes[3].TextContent, CultureInfo.InvariantCulture)
                 };
             }
         }
