@@ -57,7 +57,7 @@ namespace TelegramBot.WebApi.Jobs
             var existingNews = _schoolNewsService.GetByFilter(new SchoolNewsFilter {DateTime = date}).ToList();
             foreach (var schoolNewse in news)
             {
-                if (!existingNews.Any(x => x.Date.Year == date.Year && x.Date.Month == date.Month))
+                if (existingNews.All(x => x.Url != schoolNewse.Url))
                 {
                     yield return schoolNewse;
                 }

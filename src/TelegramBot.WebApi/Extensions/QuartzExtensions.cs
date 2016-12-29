@@ -30,7 +30,7 @@ namespace TelegramBot.WebApi.Extensions
             var getNewsTrigger = TriggerBuilder.Create()
                 .WithIdentity(QuartzSettings.GETNEWSTRIGGER_IDENTITY, QuartzSettings.GETNEWSGROUP_IDENTITY)
                 .StartNow()
-                .WithSimpleSchedule(x => x.WithIntervalInMinutes(1)
+                .WithSimpleSchedule(x => x.WithIntervalInHours(1)
                     .RepeatForever())
                 .Build();
             config.Jobs.Add(new Tuple<IJobDetail, ITrigger>(getNewsJob, getNewsTrigger));
