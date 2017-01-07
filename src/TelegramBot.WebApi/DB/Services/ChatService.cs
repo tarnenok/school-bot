@@ -2,14 +2,22 @@
 using System.Linq;
 using LiteDB;
 using TelegramBot.WebApi.DB.Models;
+using TelegramBot.WebApi.Models;
 
 namespace TelegramBot.WebApi.DB.Services
 {
     public class ChatService : IChartService
     {
+        private readonly AppSettings _appSettings;
+
+        public ChatService(AppSettings appSettings)
+        {
+            _appSettings = appSettings;
+        }
+
         public void Upsert(Chat chat)
         {
-            using (var db = new LiteDatabase(DBConfig.DataBasePath))
+            using (var db = new LiteDatabase(_appSettings.DataBasePath))
             {
                 db.Chats().Upsert(chat);
             }
@@ -17,7 +25,7 @@ namespace TelegramBot.WebApi.DB.Services
 
         public List<Chat> GetByFilter()
         {
-            using (var db = new LiteDatabase(DBConfig.DataBasePath))
+            using (var db = new LiteDatabase(_appSettings.DataBasePath))
             {
                 return db.Chats().FindAll().ToList();
             }

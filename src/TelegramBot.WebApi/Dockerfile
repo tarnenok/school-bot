@@ -3,5 +3,5 @@ ENTRYPOINT ["dotnet", "TelegramBot.WebApi.dll"]
 EXPOSE 5001
 WORKDIR /app
 COPY . /app
-RUN ["mkdir", "Data"]
+RUN ["mkdir", "/data/school-bot"]
 ENV ASPNETCORE_ENVIRONMENT Production

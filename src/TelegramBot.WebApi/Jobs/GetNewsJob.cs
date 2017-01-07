@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Quartz;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -18,30 +19,34 @@ namespace TelegramBot.WebApi.Jobs
         private readonly ITelegramBotClient _botClient;
         private readonly IChartService _chartService;
         private readonly ISchoolNewsService _schoolNewsService;
+        private readonly ILogger _logger;
+
 
         public GetNewsJob(
             SchoolNewService schoolNewLoader,
             ITelegramBotClient botClient,
             IChartService chartService,
-            ISchoolNewsService schoolNewsService)
+            ISchoolNewsService schoolNewsService,
+            ILoggerFactory loggerFactory)
         {
             _schoolNewLoader = schoolNewLoader;
             _botClient = botClient;
             _chartService = chartService;
             _schoolNewsService = schoolNewsService;
+            _logger = loggerFactory.CreateLogger(nameof(GetNewsJob));
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
+            _logger.LogInformation($"Start message pulling at {DateTime.Now}");
+
             var date = DateTime.Now;
             var news = (await _schoolNewLoader.GetNewsAsync(date)).ToList();
-
-            if(news.Count == 0) return;
-
             var charts = _chartService.GetByFilter();
-
             var newest = GetNewest(news, date).ToList();
             _schoolNewsService.Upsert(newest);
+
+            _logger.LogInformation($"{newest.Count} news were added at {DateTime.Now}");
 
             foreach (var schoolNews in newest)
             {
@@ -50,6 +55,8 @@ namespace TelegramBot.WebApi.Jobs
                     await _botClient.SendNews(schoolNews, chart.Id);
                 }
             }
+
+            _logger.LogInformation($"Stop message pulling at {DateTime.Now}");
         }
 
         private IEnumerable<SchoolNews> GetNewest(IEnumerable<SchoolNews> news, DateTime date)

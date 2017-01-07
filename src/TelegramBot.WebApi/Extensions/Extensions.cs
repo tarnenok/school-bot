@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using RestSharp;
 using TelegramBot.WebApi.Models;
@@ -25,6 +26,11 @@ namespace TelegramBot.WebApi.Extensions
                 source.SetResult(response);
             });
             return source.Task;
+        }
+
+        public static int DateInDays(this DateTime date)
+        {
+            return date.Year * 365 + date.DayOfYear;
         }
     }
 }

@@ -44,15 +44,16 @@ namespace TelegramBot.WebApi.Controllers
                 await _botClient.SendTextMessageAsync(message.Chat.Id, HelpText);
             }else if (message.Text.Contains("/week"))
             {
-                var news = _schoolNewsService.GetByFilter(new SchoolNewsFilter {DateTime = DateTime.Now})
-                    .Where(x => x.Date.DayOfYear > DateTime.Now.DayOfYear - 7);
+                var news = _schoolNewsService.GetByFilter(new SchoolNewsFilter())
+                    .Where(x => x.Date.DateInDays() > DateTime.Now.DateInDays() - 7);
                 foreach (var schoolNewse in news)
                 {
                     await _botClient.SendNews(schoolNewse, message.Chat.Id.ToString());
                 }
             }else if (message.Text.Contains("/month"))
             {
-                var news = _schoolNewsService.GetByFilter(new SchoolNewsFilter {DateTime = DateTime.Now});
+                var news = _schoolNewsService.GetByFilter(new SchoolNewsFilter())
+                    .Where(x => x.Date.DateInDays() > DateTime.Now.DateInDays() - 31);
                 foreach (var schoolNewse in news)
                 {
                     await _botClient.SendNews(schoolNewse, message.Chat.Id.ToString());
@@ -68,8 +69,8 @@ namespace TelegramBot.WebApi.Controllers
 
         private string HelpText => "Привет! Я бот Средней школы №1 г.п. Шарковщина. Моя задача - оповещать о новостях школы.\n"+
                                    "Вот список комманд, которые я могу выполнять\n"+
-                                   "/month - Показать список новостей за текущий месяц\n"+
-                                   "/week - Показать список новостей за прошлую неделю\n"+
+                                   "/month - Показать список новостей за месяц\n"+
+                                   "/week - Показать список новостей за неделю\n"+
                                    "/help - Узнай что я могу делать";
 
         private string UhandledText => "Я тебя не понимаю, попробуй еще раз";
