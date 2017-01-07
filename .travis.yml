@@ -5,11 +5,12 @@ mono: none
 dotnet: 1.0.0-preview2-003121
 before_script:
   - chmod a+x ./build.sh
+  - cd ./src/TelegramBot.WebApi
 script:
-  - ./build.sh --quiet verify
+  - ./../../build.sh --quiet verify
 deploy:
   - provider: script
-    script: ./deploy.sh $DOCKER_USERNAME $DOCKER_PASSWORD
+    script: ./../../deploy.sh $DOCKER_USERNAME $DOCKER_PASSWORD
     skip_cleanup: true
     on:
       branch: master
