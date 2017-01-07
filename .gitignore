@@ -277,3 +277,6 @@ __pycache__/
 
 #settings
 appsettings.*.json
+
+#data file
+src/TelegramBot.WebApi/Data/data.db

@@ -1,2 +1,4 @@
 $imageName = 'tarnenok/school-bot'
-docker run -it -p 5001:5001 $imageName
+$containerVolume = ''
+$localVolume = ''
+docker run -d -it -p 5001:5001 -v $localVolume:$containerVolume $imageName
