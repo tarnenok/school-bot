@@ -18,6 +18,7 @@ ProjectSection(SolutionItems) = preProject
 	run.ps1 = run.ps1
 	build.sh = build.sh
 	.travis.yml = .travis.yml
+	deploy.sh = deploy.sh
 EndProjectSection
 EndProject
 Global

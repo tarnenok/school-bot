@@ -1,2 +1,4 @@
-#!/usr/bin/env bash
-dotnet restore && dotnet build ./src/TelegramBot.WebApi/project.json
+#!/bin/bash
+set -ev
+dotnet restore
+dotnet build ./src/TelegramBot.WebApi/project.json -c Release
