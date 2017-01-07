@@ -5,6 +5,7 @@ mono: none
 dotnet: 1.0.0-preview2-003121
 before_script:
   - chmod a+x ./build.sh
+  - chmod a+x ./deploy.sh
   - cd ./src/TelegramBot.WebApi
 script:
   - ./../../build.sh
