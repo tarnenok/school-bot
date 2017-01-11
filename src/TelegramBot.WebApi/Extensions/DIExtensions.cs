@@ -16,7 +16,7 @@ namespace TelegramBot.WebApi.Extensions
         private static IServiceCollection AddDBServices(this IServiceCollection collection)
         {
             collection.AddTransient<ISchoolNewsService, SchoolNewsService>();
-            collection.AddTransient<IChartService, ChatService>();
+            collection.AddTransient<IChatService, ChatService>();
             collection.AddTransient<IUnhandledMessageService, UnhandledMessageService>();
             return collection;
         }

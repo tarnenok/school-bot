@@ -15,18 +15,18 @@ namespace TelegramBot.WebApi.Controllers
     public class WebHookController : Controller
     {
         private readonly ITelegramBotClient _botClient;
-        private readonly IChartService _chartService;
+        private readonly IChatService _chatService;
         private readonly ISchoolNewsService _schoolNewsService;
         private readonly IUnhandledMessageService _unhandledMessageService;
 
         public WebHookController(
             ITelegramBotClient botClient,
-            IChartService chartService,
+            IChatService chatService,
             ISchoolNewsService schoolNewsService,
             IUnhandledMessageService unhandledMessageService)
         {
             _botClient = botClient;
-            _chartService = chartService;
+            _chatService = chatService;
             _schoolNewsService = schoolNewsService;
             _unhandledMessageService = unhandledMessageService;
         }
@@ -38,7 +38,7 @@ namespace TelegramBot.WebApi.Controllers
 
             if (message.Text.Contains("/start"))
             {
-                _chartService.Upsert(new Chat
+                _chatService.Upsert(new Chat
                 {
                     Id = message.Chat.Id.ToString()
                 });

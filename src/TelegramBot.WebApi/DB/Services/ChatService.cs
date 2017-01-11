@@ -6,7 +6,7 @@ using TelegramBot.WebApi.Models;
 
 namespace TelegramBot.WebApi.DB.Services
 {
-    public class ChatService : IChartService
+    public class ChatService : IChatService
     {
         private readonly AppSettings _appSettings;
 

@@ -17,7 +17,7 @@ namespace TelegramBot.WebApi.Jobs
     {
         private readonly SchoolNewService _schoolNewLoader;
         private readonly ITelegramBotClient _botClient;
-        private readonly IChartService _chartService;
+        private readonly IChatService _chatService;
         private readonly ISchoolNewsService _schoolNewsService;
         private readonly ILogger _logger;
 
@@ -25,13 +25,13 @@ namespace TelegramBot.WebApi.Jobs
         public GetNewsJob(
             SchoolNewService schoolNewLoader,
             ITelegramBotClient botClient,
-            IChartService chartService,
+            IChatService chatService,
             ISchoolNewsService schoolNewsService,
             ILoggerFactory loggerFactory)
         {
             _schoolNewLoader = schoolNewLoader;
             _botClient = botClient;
-            _chartService = chartService;
+            _chatService = chatService;
             _schoolNewsService = schoolNewsService;
             _logger = loggerFactory.CreateLogger(nameof(GetNewsJob));
         }
@@ -42,7 +42,7 @@ namespace TelegramBot.WebApi.Jobs
 
             var date = DateTime.Now;
             var news = (await _schoolNewLoader.GetNewsAsync(date)).ToList();
-            var charts = _chartService.GetByFilter();
+            var charts = _chatService.GetByFilter();
             var newest = GetNewest(news, date).ToList();
             _schoolNewsService.Upsert(newest);
 
