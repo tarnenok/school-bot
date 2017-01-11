@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using TelegramBot.WebApi.DB.Models;
 using TelegramBot.WebApi.DB.Services;
 using TelegramBot.WebApi.Extensions;
 using Chat = TelegramBot.WebApi.DB.Models.Chat;
@@ -16,15 +17,18 @@ namespace TelegramBot.WebApi.Controllers
         private readonly ITelegramBotClient _botClient;
         private readonly IChartService _chartService;
         private readonly ISchoolNewsService _schoolNewsService;
+        private readonly IUnhandledMessageService _unhandledMessageService;
 
         public WebHookController(
             ITelegramBotClient botClient,
             IChartService chartService,
-            ISchoolNewsService schoolNewsService)
+            ISchoolNewsService schoolNewsService,
+            IUnhandledMessageService unhandledMessageService)
         {
             _botClient = botClient;
             _chartService = chartService;
             _schoolNewsService = schoolNewsService;
+            _unhandledMessageService = unhandledMessageService;
         }
 
         [HttpPost("")]
@@ -62,6 +66,12 @@ namespace TelegramBot.WebApi.Controllers
             else
             {
                 await _botClient.SendTextMessageAsync(message.Chat.Id, UhandledText);
+                _unhandledMessageService.Insert(new UnhandledMessage
+                {
+                    Text = message.Text,
+                    ChartId = message.Chat.Id,
+                    Created = DateTime.Now.ToUniversalTime(),
+                });
             }
 
             return Ok();
